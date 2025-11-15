@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ATAT101 — Practice Midterm</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --accent: #1a73e8;
+            --accent-light: #e8f0fe;
+            --text-primary: #212121;
+            --text-secondary: #616161;
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --correct: #4caf50;
+            --incorrect: #f44336;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        select, input[type=number] {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #fafafa;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: 0;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button.secondary {
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid #c8e0ff;
+        }
+
+        button.secondary:hover {
+            background: #d2e4ff;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #timer {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .question-card {
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #fdfdfd;
+        }
+
+        .qtext {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .choice {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .choice:hover {
+            background-color: #f5f8fc;
+            border-color: #c8e0ff;
+        }
+
+        .choice input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #bdbdbd;
+            border-radius: 50%;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+            position: relative;
+        }
+
+        .choice input[type="radio"]:checked {
+            border: 6px solid var(--accent);
+        }
+
+        .choice input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .choice span {
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            gap: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent);
+            border-radius: 4px;
+            transition: width 0.3s ease-in-out;
+        }
+        
+        .feedback-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .feedback-text {
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .feedback-text.correct {
+            color: var(--correct);
+            background-color: #e8f5e9;
+        }
+
+        .feedback-text.incorrect {
+            color: var(--incorrect);
+            background-color: #ffebee;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+        }
+
+        .result-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-qtext {
+            font-weight: 600;
+        }
+
+        .correct {
+            color: var(--correct);
+            font-weight: 700;
+        }
+
+        .incorrect {
+            color: var(--incorrect);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px auto;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls > * {
+                width: 100%;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .footer > div {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>ATAT101 — Practice Midterm</h1>
+            <div class="meta">30 questions (6 wk1 • 12 wk2 • 12 wk3) — randomized each start</div>
+        </div>
+        <div class="meta">Made for: Theory of Flight review</div>
+    </header>
+
+    <div class="card">
+        <div class="controls">
+            <label>Duration:
+                <select id="durationSelect">
+                    <option value="30">30 minutes (default)</option>
+                    <option value="45">45 minutes</option>
+                    <option value="60">60 minutes (max)</option>
+                </select>
+            </label>
+
+            <button id="startBtn">Start Quiz</button>
+            <button id="restartBtn" class="secondary" style="display:none">Restart (new set)</button>
+
+            <div style="margin-left:auto">
+                <div class="meta">Time left: <span id="timer">00:00:00</span></div>
+            </div>
+        </div>
+
+        <div id="quizArea" style="display:none">
+            <div id="progress-container" class="meta" style="margin-bottom: 12px;">
+                <span id="progress">Question 0 / 30</span>
+                <div class="progress-bar">
+                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+            
+            <form id="quizForm" autocomplete="off"></form>
+
+            <div class="footer">
+                <div>
+                    <button id="prevBtn" class="secondary" type="button" disabled>Previous</button>
+                    <button id="nextBtn" class="secondary" type="button" disabled>Next</button>
+                </div>
+                <button id="submitBtn" type="button">Submit Quiz</button>
+            </div>
+
+            <div id="resultArea"></div>
+        </div>
+
+        <div id="introArea">
+            <h3>Instructions</h3>
+            <p>When you press **Start Quiz**, a randomized 30-question multiple-choice exam (6 from Week 1, 12 from Week 2, 12 from Week 3) will be generated and the timer will begin. Default time is 30 minutes. Max allowed time is 60 minutes. When the timer expires the quiz will auto-submit. You can move between questions with Previous/Next. You can also **check your answer as you go** using the "Check Answer" button on each question card. Good luck! 🛫</p>
+            <p>*Note:* The choices were auto-generated from your review prompts — double-check that everything maps to your instructor's answer key before using as a graded test.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function shuffleArray(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    const week1 = [
+        {id: 'w1-1', q: "The coldest place on Earth can be found in which atmospheric layer?", choices: ["Antarctica", "Mount Everest", "Thermosphere", "Mesosphere"], answerIndex: 3},
+        {id: 'w1-2', q: "What is the difference between the Kelvin and Celsius scales?", choices: ["Kelvin starts at absolute zero; same degree size as Celsius", "Kelvin degrees are a different size than Celsius", "Kelvin zero is the freezing point of water", "Kelvin and Celsius are identical"], answerIndex: 0},
+        {id: 'w1-3', q: "According to Boyle's Law, what happens if you reduce the pressure of a gas by half (constant temperature)?", choices: ["Halve", "Double", "Increases by one-third", "Stay the same"], answerIndex: 1},
+        {id: 'w1-4', q: "Boyle's Law states that pressure is inversely proportional to:", choices: ["Mass", "Volume", "Temperature", "Density"], answerIndex: 1},
+        {id: 'w1-5', q: "In North America, the standard measurement for atmospheric pressure is:", choices: ["Inches of Mercury (inHg)", "Pascals (Pa)", "KiloPascals (KPa)", "Newtons per square meter"], answerIndex: 0},
+        {id: 'w1-6', q: "In most countries, the standard measurement for atmospheric pressure is:", choices: ["Pascals", "Atmospheres", "Inches of Mercury", "Millibars (mb) / Hectopascals (hPa)"], answerIndex: 0},
+        {id: 'w1-7', q: "Pressure measured against the atmospheric pressure is known as:", choices: ["Absolute pressure", "Gauge pressure", "Static pressure", "Differential pressure"], answerIndex: 1},
+        {id: 'w1-8', q: "Pressure measured against a perfect vacuum is known as:", choices: ["Dynamic pressure", "Absolute pressure", "Differential pressure", "Gauge pressure"], answerIndex: 1},
+        {id: 'w1-9', q: "Pressure measured between two different points is known as:", choices: ["Gauge pressure", "Absolute pressure", "Differential pressure", "Static pressure"], answerIndex: 2},
+        {id: 'w1-10', q: "The constant force surrounding the earth due to air weight is known as:", choices: ["Atmospheric pressure", "Lift", "Dynamic pressure", "Density pressure"], answerIndex: 0},
+        {id: 'w1-11', q: "The Northern Lights (Aurora Borealis) occur in which atmospheric layer?", choices: ["Troposphere", "Thermosphere", "Mesosphere", "Stratosphere"], answerIndex: 1},
+        {id: 'w1-12', q: "The ozone layer is contained in which atmospheric layer?", choices: ["Stratosphere", "Thermosphere", "Troposphere", "Mesosphere"], answerIndex: 0},
+        {id: 'w1-13', q: "What happens to air temperature in the Troposphere as altitude increases?", choices: ["Temperature stays constant", "Temperature increases", "Temperature decreases", "Temperature fluctuates"], answerIndex: 2},
+        {id: 'w1-14', q: "What happens to air temperature in the Stratosphere as altitude increases?", choices: ["Temperature decreases", "Temperature stays constant", "Temperature increases", "Temperature fluctuates"], answerIndex: 2},
+        {id: 'w1-15', q: "At approximately what altitude does temperature stabilize at -55 °C?", choices: ["70,000 ft (21 km)", "36,000 ft (11 km)", "18,000 ft (5.5 km)", "50,000 ft (15 km)"], answerIndex: 1},
+        {id: 'w1-16', q: "Rankine degrees are the same size as which scale?", choices: ["Kelvin", "Fahrenheit", "Celsius", "None"], answerIndex: 1},
+        {id: 'w1-17', q: "What are the ICAO standard day conditions?", choices: ["Sea level pressure 990 hPa, 10 °C", "Sea level pressure 29.92 “Hg, 15 °C, Gravity; 32.174 fps/s", "Sea level pressure 1020 hPa, 20 °C, lapse rate -2 °C/km", "Sea level pressure 1000 hPa, 0 °C, no lapse"], answerIndex: 1},
+        {id: 'w1-18', q: "Charles' Law states the volume of a gas is directly proportional to (constant pressure):", choices: ["Pressure", "Absolute temperature", "Relative humidity", "Mass"], answerIndex: 1},
+        {id: 'w1-19', q: "Dalton's Law refers to:", choices: ["Pressure-volume relationship", "Flow in ducts", "Partial pressures of gases in a mixture", "Temperature change during compression"], answerIndex: 2},
+        {id: 'w1-20', q: "The weight of a one square inch column of air at sea level to the top of the atmosphere is:", choices: ["32 lbs", "14.7 lbs", "101.3 lbs", "9.8 lbs"], answerIndex: 1},
+        {id: 'w1-21', q: "Heat is a form of energy that:", choices: ["Cannot be transferred", "Can be transferred by conduction, convection, or radiation", "Exists only at high temperature", "Is stored only in solids"], answerIndex: 1},
+        {id: 'w1-22', q: "Which temperature scale is based on the freezing and boiling points of water?", choices: ["Celsius", "Kelvin", "Rankine", "Fahrenheit"], answerIndex: 0},
+        {id: 'w1-23', q: "An engine experiencing increased air density will:", choices: ["Produce less power", "Stop running", "Not be affected", "Produce more power"], answerIndex: 3},
+        {id: 'w1-24', q: "Less dense air causes an aircraft to:", choices: ["Have reduced performance", "Perform better", "Have more lift", "Maintain same performance"], answerIndex: 0},
+        {id: 'w1-25', q: "An aircraft experiencing decreased air density will:", choices: ["Climb faster", "Be unaffected", "Take off shorter", "Need longer takeoff roll and climb slower"], answerIndex: 3},
+        {id: 'w1-26', q: "An aircraft experiencing increased air density will:", choices: ["Take off shorter and climb faster", "Not affected", "Climb slower", "Need longer runway"], answerIndex: 0},
+        {id: 'w1-27', q: "High humidity air affects an aircraft by:", choices: ["Reducing performance (less dense air)", "No effect", "Increasing performance", "Improving climb only"], answerIndex: 0},
+        {id: 'w1-28', q: "Low humidity air affects an aircraft by:", choices: ["Improving performance", "Causing icing", "Reducing performance", "No effect"], answerIndex: 0},
+        {id: 'w1-29', q: "The temperature of the air when it reaches saturation (cannot hold more moisture) is called:", choices: ["Relative humidity", "Dew point", "Frost point", "Condensation point"], answerIndex: 1},
+        {id: 'w1-30', q: "\"As the velocity of a fluid increases, static pressure decreases if no energy is added/removed.\" This is:", choices: ["Boyle's Law", "Bernoulli's Principle", "Dalton's Law", "Charles' Law"], answerIndex: 1},
+        {id: 'w1-31', q: "The principle of pressure differential over a wing was discovered by:", choices: ["Daniel Bernoulli", "Jacques Charles", "Robert Boyle", "Isaac Newton"], answerIndex: 0},
+        {id: 'w1-32', q: "The amount of air molecules passing a point per unit time in a duct is:", choices: ["Dynamic pressure", "Mass airflow", "Air density", "Volume flow"], answerIndex: 1},
+        {id: 'w1-33', q: "Subsonic air exiting a converging duct will:", choices: ["Stay the same", "Shock", "Decrease in velocity", "Increase in velocity, decrease in pressure"], answerIndex: 3},
+        {id: 'w1-34', q: "Newton's Third Law states:", choices: ["Pressure is inversely proportional to volume", "Volume is proportional to temperature", "Force equals mass times acceleration", "Every action has an equal and opposite reaction"], answerIndex: 3},
+        {id: 'w1-35', q: "What are the percentages of the two main gases in the atmosphere?", choices: ["78% Nitrogen, 21% Oxygen", "70% Oxygen, 30% Nitrogen", "90% Nitrogen, 10% Oxygen", "50% Oxygen, 50% Nitrogen"], answerIndex: 0},
+        {id: 'w1-36', q: "Which layer of the atmosphere can people fly in unprotected?", choices: ["Stratosphere", "Troposphere", "Mesosphere", "Thermosphere"], answerIndex: 1},
+        {id: 'w1-37', q: "Which of the following is an example of a lighter-than-air aircraft?", choices: ["Helicopter", "Glider", "Hot air balloon", "Jet"], answerIndex: 2},
+        {id: 'w1-38', q: "Higher humidity air affects an aircraft the same way as:", choices: ["Lower altitude", "Higher altitude (less dense air)", "More fuel", "Colder air"], answerIndex: 1},
+        {id: 'w1-39', q: "Subsonic air exiting a diverging duct will:", choices: ["Stay constant", "Decrease in velocity, increase in pressure", "Increase in velocity", "Create shock waves"], answerIndex: 1}
+    ];
+    const week2 = [
+        {id: 'w2-1', q: "Which force in flight opposes weight?", choices: ["Thrust", "Lift", "Moment", "Drag"], answerIndex: 1},
+        {id: 'w2-2', q: "If thrust and drag are equal AND lift and weight are equal, the aircraft is in:", choices: ["Climb", "Descent", "Yaw", "Equilibrium"], answerIndex: 3},
+        {id: 'w2-3', q: "If a force in flight is greater than the opposite one, the aircraft will:", choices: ["Stop moving", "Descend vertically", "Accelerate in the direction of the greater force", "Remain in equilibrium"], answerIndex: 2},
+        {id: 'w2-4', q: "Flight equilibrium occurs when:", choices: ["Lift exceeds weight", "All opposing forces are balanced", "Thrust exceeds drag", "Forces act only vertically"], answerIndex: 1},
+        {id: 'w2-5', q: "Forces perpendicular or parallel to the flight path are:", choices: ["Drag and Torque", "Gyroscopic forces", "Lift (perpendicular) and Drag (parallel)", "Thrust (perpendicular) and Weight (parallel)"], answerIndex: 2},
+        {id: 'w2-6', q: "Bernoulli’s theory regarding a wing states:", choices: ["As airflow velocity increases over the wing, pressure decreases", "Pressure above the wing is always higher than below", "Lift does not depend on pressure", "As airflow velocity decreases, pressure decreases"], answerIndex: 0},
+        {id: 'w2-7', q: "The stagnation point on an airfoil is:", choices: ["Where relative wind is brought to rest", "At the trailing edge", "At the wingtip", "Where lift is maximum"], answerIndex: 0},
+        {id: 'w2-8', q: "Angle of Attack is best described as:", choices: ["Angle between wing and fuselage", "Angle of yaw", "Angle of roll", "Angle between the wing chord line and relative wind"], answerIndex: 3},
+        {id: 'w2-9', q: "Increasing Angle of Attack affects lift and drag by:", choices: ["Increasing lift up to critical AoA, then causing stall", "Decreasing lift always", "Not affecting drag", "Decreasing drag always"], answerIndex: 0},
+        {id: 'w2-10', q: "Relative wind is defined as:", choices: ["Engine intake flow", "The airflow opposite the direction of flight", "Wind measured at the ground", "Weather wind aloft"], answerIndex: 1},
+        {id: 'w2-11', q: "The Coefficient of Lift (CL) is affected by:", choices: ["Engine thrust and RPM", "Wing loading and CG position", "Angle of attack, wing area, airspeed, air density", "Cabin pressure and temperature"], answerIndex: 2},
+        {id: 'w2-12', q: "Drag experienced by an aircraft in flight consists of:", choices: ["Wave drag only", "Induced drag and Parasitic drag", "Skin friction only", "Lift drag only"], answerIndex: 1},
+        {id: 'w2-13', q: "Parasitic drag is made up of:", choices: ["Form drag, skin friction, interference drag", "Induced drag only", "Wave drag", "Lift-induced turbulence"], answerIndex: 0},
+        {id: 'w2-14', q: "Induced drag is related to:", choices: ["Engine exhaust", "Lift production", "Boundary layer transition", "Parasite items like antennas"], answerIndex: 1},
+        {id: 'w2-15', q: "The Lift/Drag Ratio is a measure of:", choices: ["Efficiency of a wing", "Aircraft weight", "Yaw stability", "Stall speed"], answerIndex: 0},
+        {id: 'w2-16', q: "Wingtip vortices are stronger when:", choices: ["Airspeed is low and AoA is high", "Flaps are retracted", "Airspeed is high and AoA low", "Aircraft is inverted"], answerIndex: 0},
+        {id: 'w2-17', q: "Devices that reduce wingtip vortices include:", choices: ["Spoilers only", "Winglets and tip fences", "Elevators", "Rudder"], answerIndex: 1},
+        {id: 'w2-18', q: "Aircraft stability refers to:", choices: ["The ability to resist airflow", "The tendency to return to trimmed flight after disturbance", "Engine balance", "Only maneuverability"], answerIndex: 1},
+        {id: 'w2-19', q: "Dynamic stability means:", choices: ["Pilot must manually correct", "Oscillations after disturbance decrease over time", "No change occurs after disturbance", "Aircraft remains at new attitude permanently"], answerIndex: 1},
+        {id: 'w2-20', q: "Boundary layer that is smooth and orderly is called:", choices: ["Turbulent flow", "Separated flow", "Laminar flow", "Burble flow"], answerIndex: 2},
+        {id: 'w2-21', q: "Boundary layer that is chaotic and increases drag is:", choices: ["Turbulent flow", "Burble flow", "Separated flow", "Laminar flow"], answerIndex: 0},
+        {id: 'w2-22', q: "The Critical Angle of Attack is:", choices: ["Maximum geometric incidence", "The AoA in cruise", "Any AoA during climb", "The AoA at which the wing stalls"], answerIndex: 3},
+        {id: 'w2-23', q: "Stall speed increases when:", choices: ["Weight decreases", "Altitude increases only", "Humidity increases only", "Weight increases or flaps are retracted"], answerIndex: 3},
+        {id: 'w2-24', q: "Stall warning is typically provided by:", choices: ["A horn, stick shaker, or light when approaching critical AoA", "Engine vibration due to airflow separation", "Sudden increase in indicated airspeed from turbulent flow", "Altitude alert triggered by rapid descent rate"], answerIndex: 0},
+        {id: 'w2-25', q: "Torque, corkscrew effect, and gyroscopic precession are phenomena of:", choices: ["Wingtip vortices", "Propeller-driven aircraft", "Gliders only", "Jets"], answerIndex: 1},
+        {id: 'w2-26', q: "Aircraft horizontal stabilizer provides stability about the:", choices: ["Lateral axis", "All axes equally", "Vertical axis (yaw)", "Longitudinal axis (roll)"], answerIndex: 0},
+        {id: 'w2-27', q: "Aircraft vertical stabilizer provides stability about the:", choices: ["Lateral axis", "Pitch only", "Vertical axis", "Longitudinal axis"], answerIndex: 2}
+    ];
+    const week3 = [
+        {id: 'w3-1', q: "Aspect ratio of a wing is defined as:", choices: ["Wing chord length", "Tip-to-root distance only", "Max thickness", "Span² ÷ Wing area"], answerIndex: 3},
+        {id: 'w3-2', q: "Angle of incidence is:", choices: ["Pilot-controlled AoA", "Fixed angle between chord line & fuselage axis", "Flap deflection angle", "Dihedral angle"], answerIndex: 1},
+        {id: 'w3-3', q: "A wing stall is best controlled by:", choices: ["Full rudder input only", "Pulling nose up", "Lower nose to reduce AoA and add power as needed", "Turning flaps off"], answerIndex: 2},
+        {id: 'w3-4', q: "Aircraft stability in pitch, roll and yaw is called:", choices: ["Dynamic stability only", "Neutral stability", "Longitudinal, lateral, and directional stability", "G-factor"], answerIndex: 2},
+        {id: 'w3-5', q: "Which axis corresponds to pitch motion?", choices: ["Lateral axis", "Vertical axis", "Body diagonal", "Longitudinal axis"], answerIndex: 0},
+        {id: 'w3-6', q: "Which axis corresponds to roll motion?", choices: ["Vertical axis", "Longitudinal axis", "Span axis", "Lateral axis"], answerIndex: 1},
+        {id: 'w3-7', q: "Which axis corresponds to yaw motion?", choices: ["Any diagonal axis", "Vertical axis", "Longitudinal axis", "Lateral axis"], answerIndex: 1},
+        {id: 'w3-8', q: "Which control surface controls roll?", choices: ["Spoilers", "Rudder", "Ailerons", "Elevator"], answerIndex: 2},
+        {id: 'w3-9', q: "Which control surface controls pitch?", choices: ["Rudder", "Ailerons", "Spoilers", "Elevator"], answerIndex: 3},
+        {id: 'w3-10', q: "Which control surface controls yaw?", choices: ["Elevator", "Ailerons", "Flaps", "Rudder"], answerIndex: 3},
+        {id: 'w3-11', q: "The G factor on an aircraft refers to:", choices: ["Gyroscopic precession", "Gravity only at sea level", "Fuel efficiency", "Load factor due to maneuvering"], answerIndex: 3},
+        {id: 'w3-12', q: "Wing loading refers to:", choices: ["Thrust ÷ Weight", "Aircraft weight ÷ Wing area", "Lift ÷ Drag", "Fuel ÷ Range"], answerIndex: 1},
+        {id: 'w3-13', q: "Speed of sound at sea level (ISA, 15 °C) is approximately:", choices: ["500 m/s", "200 knots", "100 m/s", "340 m/s"], answerIndex: 3},
+        {id: 'w3-14', q: "Which factors affect the speed of sound?", choices: ["Air pressure only", "Humidity only", "Altitude only", "Air temperature"], answerIndex: 3},
+        {id: 'w3-15', q: "Subsonic flight is defined as:", choices: ["Mach >5", "Mach <1.0", "Mach 1", "Mach >1"], answerIndex: 1},
+        {id: 'w3-16', q: "Transonic flight is defined as:", choices: ["Mach <1.0", "Mach >1", "Mach >5", "Mach 1"], answerIndex: 3},
+        {id: 'w3-17', q: "Supersonic flight is defined as:", choices: ["Mach 1.0", "Mach >1.0", "Mach <1.0", "Mach >5"], answerIndex: 1},
+        {id: 'w3-18', q: "Hypersonic flight is defined as:", choices: ["Mach <1.0", "Mach 1.0", "Mach >5", "Mach >1"], answerIndex: 2},
+        {id: 'w3-19', q: "Shock waves in transonic flight occur when:", choices: ["Humidity is high", "Prop tips reach Mach 1", "Airflow reaches supersonic speed locally then decelerates", "Air becomes very cold"], answerIndex: 2},
+        {id: 'w3-20', q: "At transonic/supersonic speeds, how many shock waves can form?", choices: ["Only one shock wave", "None", "Depends only on humidity", "Multiple shock waves, both normal and oblique"], answerIndex: 3},
+        {id: 'w3-21', q: "Wings designed for supersonic speeds typically use:", choices: ["Straight rectangular wings", "Variable camber only", "Thick high-lift airfoils", "Swept or delta wings"], answerIndex: 3},
+        {id: 'w3-22', q: "At supersonic speed, air behaves as:", choices: ["Vacuum", "Incompressible flow", "Compressible flow", "Constant density"], answerIndex: 2},
+        {id: 'w3-23', q: "Critical Mach number is:", choices: ["A humidity threshold", "Only for rockets", "Lowest Mach number where local airflow first reaches Mach 1", "Mach for entire aircraft to go supersonic"], answerIndex: 2},
+        {id: 'w3-24', q: "To improve critical Mach number, designers often:", choices: ["Sweep wings or use thinner airfoils", "Use thicker wings", "Add more flaps", "Lower aspect ratio"], answerIndex: 0},
+        {id: 'w3-25', q: "Primary flight controls are:", choices: ["Slats and slots", "Ailerons, elevator, rudder", "Flaps and slats", "Spoilers and trim"], answerIndex: 1},
+        {id: 'w3-26', q: "Secondary flight controls are:", choices: ["Throttle and mixture", "Flaps, slats, spoilers, trim", "Ailerons, elevator, rudder", "Navigation lights"], answerIndex: 1},
+        {id: 'w3-27', q: "Control boosting systems are used to:", choices: ["Reduce stall speed", "Increase drag", "Make flight controls redundant", "Assist pilots in overcoming aerodynamic loads"], answerIndex: 3},
+        {id: 'w3-28', q: "Balanced control surfaces and aerodynamic aids help:", choices: ["Increase stall speed", "Reduce pilot control forces", "Reduce wing loading", "Eliminate drag"], answerIndex: 1},
+        {id: 'w3-29', q: "Which surfaces provide stability in flight?", choices: ["Flaps, slats, and spoilers", "Horizontal stabilizer, vertical stabilizer, wing dihedral", "Elevator, rudder, and ailerons", "Wing sweep, fuselage shape, and trim tabs"], answerIndex: 1}
+    ];
+
+    const SAMPLE_COUNTS = {w1: 6, w2: 12, w3: 12};
+    let currentQuestions = [];
+    let timerInterval = null;
+    let timeRemainingSeconds = 0;
+    let currentIndex = 0;
+
+    const quizForm = document.getElementById('quizForm');
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const durationSelect = document.getElementById('durationSelect');
+    const quizArea = document.getElementById('quizArea');
+    const introArea = document.getElementById('introArea');
+    const timerEl = document.getElementById('timer');
+    const progressEl = document.getElementById('progress');
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultArea = document.getElementById('resultArea');
+
+    function sampleQuestions() {
+        const s = (arr, n) => shuffleArray(arr.slice()).slice(0, n);
+        const selection = [...s(week1, SAMPLE_COUNTS.w1), ...s(week2, SAMPLE_COUNTS.w2), ...s(week3, SAMPLE_COUNTS.w3)];
+        return shuffleArray(selection);
+    }
+
+    function renderQuiz() {
+        quizForm.innerHTML = '';
+        currentQuestions.forEach((qObj, idx) => {
+            const qdiv = document.createElement('div');
+            qdiv.className = 'question-card';
+            qdiv.id = 'q-' + idx;
+            qdiv.dataset.index = idx;
+
+            const qtext = document.createElement('div');
+            qtext.className = 'qtext';
+            qtext.textContent = `Question ${idx + 1} of ${currentQuestions.length}: ${qObj.q}`;
+            qdiv.appendChild(qtext);
+
+            const choices = document.createElement('div');
+            choices.className = 'choices';
+            qObj.choices.forEach((ch, ci) => {
+                const label = document.createElement('label');
+                label.className = 'choice';
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'answer-' + idx;
+                input.value = String(ci);
+                input.dataset.qidx = idx;
+                label.appendChild(input);
+                const span = document.createElement('span');
+                span.textContent = ch;
+                label.appendChild(span);
+                choices.appendChild(label);
+            });
+            qdiv.appendChild(choices);
+
+            const feedbackArea = document.createElement('div');
+            feedbackArea.className = 'feedback-area';
+            
+            const checkBtn = document.createElement('button');
+            checkBtn.className = 'secondary';
+            checkBtn.textContent = 'Check Answer';
+            checkBtn.dataset.qidx = idx;
+            checkBtn.addEventListener('click', handleCheckAnswer);
+            feedbackArea.appendChild(checkBtn);
+
+            const feedbackText = document.createElement('div');
+            feedbackText.className = 'feedback-text';
+            feedbackArea.appendChild(feedbackText);
+            
+            qdiv.appendChild(feedbackArea);
+            qdiv.style.display = idx === 0 ? 'block' : 'none';
+            quizForm.appendChild(qdiv);
+        });
+        updateProgressBar();
+    }
+
+    function handleCheckAnswer(e) {
+        const questionIndex = parseInt(e.target.dataset.qidx, 10);
+        const questionCard = document.getElementById('q-' + questionIndex);
+        const selectedOption = questionCard.querySelector('input[type="radio"]:checked');
+        const feedbackText = questionCard.querySelector('.feedback-text');
+
+        if (!selectedOption) {
+            feedbackText.textContent = 'Please select an option.';
+            feedbackText.className = 'feedback-text incorrect';
+            return;
+        }
+
+        const selectedAnswer = parseInt(selectedOption.value, 10);
+        const correctAnswer = currentQuestions[questionIndex].answerIndex;
+
+        if (selectedAnswer === correctAnswer) {
+            feedbackText.textContent = '✅ Correct!';
+            feedbackText.className = 'feedback-text correct';
+        } else {
+            feedbackText.textContent = `❌ Incorrect. The correct answer is: ${currentQuestions[questionIndex].choices[correctAnswer]}`;
+            feedbackText.className = 'feedback-text incorrect';
+        }
+    }
+
+    function startTimer(minutes) {
+        if (minutes > 60) minutes = 60;
+        timeRemainingSeconds = Math.floor(minutes * 60);
+        updateTimerDisplay();
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeRemainingSeconds--;
+            updateTimerDisplay();
+            if (timeRemainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                autoSubmit();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const h = String(Math.floor(timeRemainingSeconds / 3600)).padStart(2, '0');
+        const m = String(Math.floor((timeRemainingSeconds % 3600) / 60)).padStart(2, '0');
+        const s = String(timeRemainingSeconds % 60).padStart(2, '0');
+        timerEl.textContent = `${h}:${m}:${s}`;
+    }
+
+    function showQuestion(index) {
+        const total = currentQuestions.length;
+        if (index < 0 || index >= total) return;
+        for (let i = 0; i < total; i++) {
+            document.getElementById('q-' + i).style.display = i === index ? 'block' : 'none';
+        }
+        currentIndex = index;
+        updateProgressBar();
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === total - 1;
+    }
+    
+    function updateProgressBar() {
+        const total = currentQuestions.length;
+        const progress = currentIndex + 1;
+        const percent = (progress / total) * 100;
+        progressEl.textContent = `Question ${progress} / ${total}`;
+        progressBarFill.style.width = `${percent}%`;
+    }
+
+    prevBtn.addEventListener('click', () => { showQuestion(currentIndex - 1); });
+    nextBtn.addEventListener('click', () => { showQuestion(currentIndex + 1); });
+
+    function collectAnswers() {
+        const answers = [];
+        for (let i = 0; i < currentQuestions.length; i++) {
+            const sel = quizForm.querySelector('input[name="answer-' + i + '"]:checked');
+            answers.push(sel ? parseInt(sel.value, 10) : null);
+        }
+        return answers;
+    }
+
+    function grade(answers) {
+        let correct = 0;
+        const perQ = [];
+        for (let i = 0; i < currentQuestions.length; i++) {
+            const got = answers[i];
+            const ok = (got !== null && got === currentQuestions[i].answerIndex);
+            if (ok) correct++;
+            perQ.push({index: i, correct: ok, got: got, correctAnswer: currentQuestions[i].choices[currentQuestions[i].answerIndex]});
+        }
+        return {score: correct, total: currentQuestions.length, perQ};
+    }
+
+    function presentResult(res) {
+        resultArea.innerHTML = '';
+        const rdiv = document.createElement('div');
+        rdiv.className = 'result';
+        rdiv.innerHTML = `<div style="font-size:18px; font-weight:700">Final Score: ${res.score} / ${res.total}</div>`;
+        const list = document.createElement('div');
+        list.style.marginTop = '16px';
+        res.perQ.forEach(p => {
+            const el = document.createElement('div');
+            el.className = 'result-item';
+            const qtext = document.createElement('div');
+            qtext.className = 'result-qtext';
+            qtext.textContent = `${p.index + 1}. ${currentQuestions[p.index].q}`;
+            const status = document.createElement('div');
+            status.style.marginTop = '6px';
+            if (p.correct) {
+                status.innerHTML = `<span class="correct">✅ Correct</span>`;
+            } else {
+                status.innerHTML = `<span class="incorrect">❌ Incorrect</span> — You selected: ${p.got === null ? 'No answer' : currentQuestions[p.index].choices[p.got]}<br>Correct answer: ${p.correctAnswer}`;
+            }
+            el.appendChild(qtext);
+            el.appendChild(status);
+            list.appendChild(el);
+        });
+        rdiv.appendChild(list);
+        resultArea.appendChild(rdiv);
+    }
+
+    function autoSubmit() {
+        const answers = collectAnswers();
+        const res = grade(answers);
+        presentResult(res);
+        submitBtn.disabled = true;
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        restartBtn.style.display = 'inline-block';
+        alert('Time is up — quiz auto-submitted.');
+    }
+
+    submitBtn.addEventListener('click', () => {
+        if (!confirm('Are you sure you want to submit? You cannot change your answers after this.')) return;
+        if (timerInterval) clearInterval(timerInterval);
+        const answers = collectAnswers();
+        const res = grade(answers);
+        presentResult(res);
+        submitBtn.disabled = true;
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        restartBtn.style.display = 'inline-block';
+    });
+
+    startBtn.addEventListener('click', () => {
+        currentQuestions = sampleQuestions();
+        renderQuiz();
+        quizArea.style.display = 'block';
+        introArea.style.display = 'none';
+        startBtn.style.display = 'none';
+        restartBtn.style.display = 'inline-block';
+        prevBtn.disabled = true;
+        nextBtn.disabled = false;
+        submitBtn.disabled = false;
+        currentIndex = 0;
+        showQuestion(0);
+        const minutes = parseInt(durationSelect.value, 10) || 30;
+        startTimer(Math.min(minutes, 60));
+    });
+
+    restartBtn.addEventListener('click', () => {
+        if (timerInterval) clearInterval(timerInterval);
+        startBtn.style.display = 'inline-block';
+        restartBtn.style.display = 'none';
+        quizArea.style.display = 'none';
+        introArea.style.display = 'block';
+        resultArea.innerHTML = '';
+        timerEl.textContent = '00:00:00';
+        progressBarFill.style.width = '0%';
+    });
+</script>
+</body>
+</html>
